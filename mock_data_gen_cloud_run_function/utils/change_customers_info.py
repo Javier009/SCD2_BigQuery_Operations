@@ -1,6 +1,6 @@
-import json
+# import json
 import random
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 from faker import Faker
 
 fake = Faker('en_US')
@@ -73,23 +73,3 @@ def customers_info_change(customers_info: list) -> list:
         updated_customers.append(current_customer)
 
     return updated_customers
-
-# def customers_info_change(customers_info:list) -> list:
-#     updated_customers = []
-#     for cust in customers_info:
-#         atributes_to_change = random.sample(customer_attributes, random.randint(2, len(customer_attributes)))
-#         atributes_to_change = [a for a in atributes_to_change if a not in ['customer_id','customer_name', 'customer_city', 'customer_zip', "customer_address"] ]
-#         # -- Change attributes to something else --
-#         staging_attributes = {"customer_name": fake.name(),
-#                               "customer_address": fake.street_address(),
-#                               "customer_city": fake.city(),
-#                               "customer_state": fake.state_abbr(),
-#                               "customer_zip": fake.postcode(),
-#                               "customer_tier": random.choice(['Bronze', 'Silver', 'Gold', 'Platinum']),
-#                               "customer_email": fake.email()
-#         }
-#         for att in atributes_to_change:
-#             cust[att] = staging_attributes[att]
-
-#         updated_customers.append(cust)
-#     return updated_customers

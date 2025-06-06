@@ -1,22 +1,9 @@
-import argparse
 import re
 import json
 import random
-from datetime import datetime, timedelta
-from faker import Faker
-
-from Module_3_class_1.financial_transactions_project.mock_data_gen_cloud_run_function.utils.change_customers_info import *
-
-from google.cloud import storage
-
-# BUCKET_NAME  = 'transactions_raw_data'
-# client = storage.Client()
-# bucket = client.get_bucket(BUCKET_NAME)
 
 
 def list_gcs_files(bucket_name, client, full_path = False, prefix=None):
-    # client = storage.Client()
-    # bucket = client.get_bucket(bucket_name)
     file_names = []
     blobs = client.list_blobs(bucket_name, prefix=prefix)
 
@@ -71,7 +58,6 @@ def random_customers_that_info_will_change(list_of_files, bucket_obj):
             for d in customer_info_data:
                 all_files_customer_info_list.append(d)
 
-        # print(len(all_files_customer_info_list))
         # Generate Unique random custumers
         final_selected_customers = []
         captured_customer_ids = []
@@ -92,7 +78,3 @@ def random_customers_that_info_will_change(list_of_files, bucket_obj):
         return final_selected_customers
     else:
         return []
-
-# files = list_gcs_files(BUCKET_NAME)
-# data = random_customers_that_info_will_change(files)
-# print(data)
