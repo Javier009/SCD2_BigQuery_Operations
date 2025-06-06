@@ -1,0 +1,30 @@
+# Upload code to GCS by skipping __pycache__ folders --> localte in pyspark_src folder
+gsutil -m rsync -r -x '.*__pycache__.*|.*/__pycache__(/.*)?$' ./ gs://spark-datasets-gds-codebase/pyspark/
+
+# DataProc Cluster Creeation -- > Use UI and it will build the command for us 
+gcloud dataproc clusters create transactions-cluster \
+    --enable-component-gateway \
+    --bucket spark-staging-bucket-transactions \
+    --region us-central1 \
+    --subnet default \
+    --master-machine-type n1-standard-2 \
+    --master-boot-disk-type pd-balanced \
+    --master-boot-disk-size 32 \
+    --num-master-local-ssds 1 \
+    --master-local-ssd-interface NVME \
+    --num-workers 2 \
+    --worker-machine-type n1-standard-2 \
+    --worker-boot-disk-type pd-balanced \
+    --worker-boot-disk-size 32 \
+    --num-worker-local-ssds 1 \
+    --worker-local-ssd-interface NVME \
+    --image-version 2.2-debian12 \
+    --optional-components JUPYTER,DOCKER,HUDI,ICEBERG,DELTA \
+    --service-account=run-project-tasks@dataproc-spark-461405.iam.gserviceaccount.com \
+    --project dataproc-spark-461405
+
+
+
+    gcloud dataproc clusters create transactions-cluster-v1 --bucket spark-staging-bucket-transactions --region us-central1 --subnet default --no-address --master-machine-type n1-standard-2 --master-boot-disk-type pd-balanced --master-boot-disk-size 32 --num-master-local-ssds 1 --master-local-ssd-interface NVME --num-workers 2 --worker-machine-type n1-standard-2 --worker-boot-disk-type pd-balanced --worker-boot-disk-size 32 --worker-local-ssd-interface NVME --image-version 2.2-debian12 --service-account=run-project-tasks@dataproc-spark-461405.iam.gserviceaccount.com  --project dataproc-spark-461405
+
+    gcloud compute ssh transactions-cluster --tunnel-through-iap

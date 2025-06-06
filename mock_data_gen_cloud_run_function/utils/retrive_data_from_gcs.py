@@ -1,10 +1,11 @@
 import argparse
+import re
 import json
 import random
 from datetime import datetime, timedelta
 from faker import Faker
 
-from change_customers_info import *
+from Module_3_class_1.financial_transactions_project.mock_data_gen_cloud_run_function.utils.change_customers_info import *
 
 from google.cloud import storage
 
@@ -13,17 +14,36 @@ from google.cloud import storage
 # bucket = client.get_bucket(BUCKET_NAME)
 
 
-def list_gcs_files(bucket_name, client, prefix=None):
+def list_gcs_files(bucket_name, client, full_path = False, prefix=None):
     # client = storage.Client()
     # bucket = client.get_bucket(bucket_name)
     file_names = []
     blobs = client.list_blobs(bucket_name, prefix=prefix)
 
     print(f"Listing files in bucket: '{bucket_name}' (prefix: '{prefix if prefix else 'None'}')")
-    for blob in blobs:
-        file_names.append(blob.name)
-        print(f"  - {blob.name}")
+    if full_path:
+        for blob in blobs:
+            file_names.append(f'gs://{bucket_name}/{blob.name}')
+    else:
+        for blob in blobs:
+            file_names.append(blob.name)
+          
+
     return file_names
+
+
+def get_latest_processed_date(files):
+    dates = []
+    for file in files:
+        match = re.search(r"transactions_(\d{4}-\d{2}-\d{2})\.json", file)
+        if match:    
+            date_str = match.group(1)
+            dates.append(date_str)
+        else:
+            pass
+    latest_date = max(dates)
+    return latest_date
+
 
 def random_customers_that_info_will_change(list_of_files, bucket_obj):
 
