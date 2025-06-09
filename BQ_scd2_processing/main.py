@@ -36,7 +36,7 @@ def main(cloud_event):
             gcs_path =f"gs://{BUCKET_NAME}/transactions_{date}.json"
             # gcs_path_archive = f"gs://{ARCHIVE_BUCKET}/transactions_{date}.json"
 
-            # 2 --> Read the data from GCS as PySpark df ---
+            # 2 --> Read the data from GCS as Pandas Data Frame df ---
 
             # All data modifications
             data = read_data(fs , gcs_path)  
