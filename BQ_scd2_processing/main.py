@@ -51,10 +51,10 @@ def main(cloud_event):
             data_all['customer_id'] = data_all['customer_info'].apply(lambda x: x['customer_id'])
 
             # Daily transactions data
-            transactions = data[["transaction_id", 'transaction_date',  "currency", "merchant_id", "merchant_category","card_type", "transaction_status", "customer_id", "transaction_timestamp", "amount"]]
+            transactions = data_all[["transaction_id", 'transaction_date',  "currency", "merchant_id", "merchant_category","card_type", "transaction_status", "customer_id", "transaction_timestamp", "amount"]]
 
             # Customer dimensions table for SCD2 process            
-            customer_info = pd.DataFrame([d for d in data['customer_info']])
+            customer_info = pd.DataFrame([d for d in data_all['customer_info']])
             customer_info['effective_start_date'] = date
             customer_info['effective_start_date'] = pd.to_datetime(customer_info['effective_start_date'], errors='coerce')
             customer_info['effective_end_date'] = datetime.strptime('3000-12-31', "%Y-%m-%d") 
