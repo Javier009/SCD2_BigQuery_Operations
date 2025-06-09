@@ -16,18 +16,20 @@ PROJECT_ID = "dataproc-spark-461405"
 BUCKET_NAME = 'transactions_raw_data'
 ARCHIVE_BUCKET = 'transactions_raw_data_archive'
 
-GCS_client = storage.Client(project=PROJECT_ID)
-fs = gcsfs.GCSFileSystem(project='dataproc-spark-461405')
-
 # BigQuery variables
 DATA_SET = 'financial_transactions'
 TRANSACTIONS_TABLE =  'daily_transactions'
 CUSTOMER_INFO_STAGING_TABLE = 'stg_daily_customer_info'
 CUSTOMER_INFO_TARGET_TABLE = 'customer_profile_scd2'
-bq_client = bigquery.Client(project=PROJECT_ID)
+
 
 @functions_framework.cloud_event
 def main(cloud_event):
+
+    GCS_client = storage.Client(project=PROJECT_ID)
+    bq_client = bigquery.Client(project=PROJECT_ID)
+    fs = gcsfs.GCSFileSystem(project='dataproc-spark-461405')
+
     # 1 --> Create a Spark Session and fetch dates from raw data bucket---
     dates = list_gcs_files_dates(BUCKET_NAME, GCS_client)
     print(dates)
