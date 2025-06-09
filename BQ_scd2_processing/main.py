@@ -30,7 +30,7 @@ bq_client = bigquery.Client(project=PROJECT_ID)
 def main(cloud_event):
     # 1 --> Create a Spark Session and fetch dates from raw data bucket---
     dates = list_gcs_files_dates(BUCKET_NAME, GCS_client)
-
+    print(dates)
     if dates:
         for date in dates:    
 
