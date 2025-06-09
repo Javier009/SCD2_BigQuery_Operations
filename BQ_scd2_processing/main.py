@@ -37,13 +37,13 @@ def main(cloud_event):
         for date in dates:    
 
             gcs_path =f"gs://{BUCKET_NAME}/transactions_{date}.json"
+            print(f'Processing {gcs_path}')
             # gcs_path_archive = f"gs://{ARCHIVE_BUCKET}/transactions_{date}.json"
 
             # 2 --> Read the data from GCS as Pandas Data Frame df ---
 
             # All data modifications
-            data_all = read_data(fs , gcs_path)
-            print(data_all.head())
+            data_all = read_data(fs , gcs_path)            
 
             data_all['transaction_timestamp'] = data_all['transaction_timestamp'].apply(lambda ts: datetime.strptime(ts, '%Y-%m-%dT%H:%M:%SZ'))
             data_all['transaction_date'] = date
@@ -71,16 +71,22 @@ def main(cloud_event):
                 print(f'Key values for transaction_id and Customer_id in file {gcs_path} not present in all rows. Please review')
             else:
                 #  4 --> Write all daily to transactions table
-                big_query_write(project_id=PROJECT_ID, dataset=DATA_SET, table=TRANSACTIONS_TABLE, BQ_client=bq_client, df=transactions, date=date)
-                
+                succesfull_transactions_write = big_query_write(project_id=PROJECT_ID, dataset=DATA_SET, table=TRANSACTIONS_TABLE, BQ_client=bq_client, df=transactions, date=date)
+                if succesfull_transactions_write:
+                    print(f'Transactions for {date} writen succesfully')
+                else:                    
+                     print(f'Transactions for {date} writen failed')                                               
                 # 5 --> Write to stagin table table
-                big_query_write(project_id=PROJECT_ID, dataset=DATA_SET, table=CUSTOMER_INFO_STAGING_TABLE, BQ_client=bq_client, df=customer_info, date=date)
+                sucessfull_staging_write = big_query_write(project_id=PROJECT_ID, dataset=DATA_SET, table=CUSTOMER_INFO_STAGING_TABLE, BQ_client=bq_client, df=customer_info, date=date)
 
-                # 6 --> SCD2 with target table
-                merge_scd2_bq(project_id=PROJECT_ID, dataset=DATA_SET, staging_table = CUSTOMER_INFO_STAGING_TABLE, target_table =CUSTOMER_INFO_TARGET_TABLE , BQ_client = bq_client)
-
-                # 7 --> Move processed file to Archive Folder in GCS
-                move_json_between_buckets(GCS_client = GCS_client , src_bucket_name = BUCKET_NAME,  dst_bucket_name = ARCHIVE_BUCKET, date = date)
+                if sucessfull_staging_write:
+                    # 6 --> SCD2 with target table
+                    merge_scd2_bq(project_id=PROJECT_ID, dataset=DATA_SET, staging_table = CUSTOMER_INFO_STAGING_TABLE, target_table =CUSTOMER_INFO_TARGET_TABLE , BQ_client = bq_client)
+                     # 7 --> Move processed file to Archive Folder in GCS
+                    move_json_between_buckets(GCS_client = GCS_client , src_bucket_name = BUCKET_NAME,  dst_bucket_name = ARCHIVE_BUCKET, date = date)
+                else:
+                    print('Error in Staggin table, NOt performning SCD2')
+               
     else:
         print('No new files to process ... ')
 
