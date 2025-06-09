@@ -24,5 +24,5 @@ def read_data(storage_file_system_object, file_path):
             df = pd.read_json(f, lines=True) 
             return df
     except Exception as e:
-       print('Error reading data')
-       return  f"❌ Error Reading Data: {e}"
+       print(f'❌  Error reading data: {e}')
+       return None
