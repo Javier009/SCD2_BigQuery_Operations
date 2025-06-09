@@ -40,15 +40,15 @@ def main(cloud_event):
             # 2 --> Read the data from GCS as Pandas Data Frame df ---
 
             # All data modifications
-            data = read_data(fs , gcs_path)
-            print(data.head())
+            data_all = read_data(fs , gcs_path)
+            print(data_all.head())
 
-            data['transaction_timestamp'] = data['transaction_timestamp'].apply(lambda ts: datetime.strptime(ts, '%Y-%m-%dT%H:%M:%SZ'))
-            data['transaction_date'] = date
-            data['transaction_date'] = pd.to_datetime(data['transaction_date'], errors='coerce')
-            data['transaction_timestamp'] =  data['transaction_timestamp'].apply(lambda ts: str(ts))            
-            data['amount'] = data['amount'].astype(str)                 
-            data['customer_id'] = data['customer_info'].apply(lambda x: x['customer_id'])
+            data_all['transaction_timestamp'] = data_all['transaction_timestamp'].apply(lambda ts: datetime.strptime(ts, '%Y-%m-%dT%H:%M:%SZ'))
+            data_all['transaction_date'] = date
+            data_all['transaction_date'] = pd.to_datetime(data_all['transaction_date'], errors='coerce')
+            data_all['transaction_timestamp'] =  data_all['transaction_timestamp'].apply(lambda ts: str(ts))            
+            data_all['amount'] = data_all['amount'].astype(str)                 
+            data_all['customer_id'] = data_all['customer_info'].apply(lambda x: x['customer_id'])
 
             # Daily transactions data
             transactions = data[["transaction_id", 'transaction_date',  "currency", "merchant_id", "merchant_category","card_type", "transaction_status", "customer_id", "transaction_timestamp", "amount"]]
