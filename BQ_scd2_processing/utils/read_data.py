@@ -1,7 +1,6 @@
 import re
 import pandas as pd
-import gcsfs
-
+import json
 
 def list_gcs_files_dates(bucket_name, GCS_client, prefix=None):
 

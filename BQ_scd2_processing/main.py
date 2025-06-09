@@ -9,6 +9,7 @@ from utils.scd2 import *
 from google.cloud import bigquery
 from google.cloud import storage
 import functions_framework
+import gcsfs
 
 
 PROJECT_ID = "dataproc-spark-461405"
@@ -39,7 +40,8 @@ def main(cloud_event):
             # 2 --> Read the data from GCS as Pandas Data Frame df ---
 
             # All data modifications
-            data = read_data(fs , gcs_path)  
+            data = read_data(fs , gcs_path)
+            print(data.head())
 
             data['transaction_timestamp'] = data['transaction_timestamp'].apply(lambda ts: datetime.strptime(ts, '%Y-%m-%dT%H:%M:%SZ'))
             data['transaction_date'] = date
