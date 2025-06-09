@@ -19,9 +19,11 @@ def big_query_write(project_id, dataset, table, BQ_client, df, date):
         job = BQ_client.load_table_from_dataframe(df, table_id, job_config=job_config)
         job.result()
         print(f'Succesfully wrote data in {table_id}, for date = {date}')
+        return True
 
     except Exception as e:
        print( f"❌ Error writing to BigQuery: {e}")
+       return False
        
 
 def column_bq_test(project_id, dataset, table, BQ_client, df):   
