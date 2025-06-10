@@ -2,3 +2,4 @@ Faker
 google-cloud-storage
 google-cloud-pubsub
 Flask
+pyarrow

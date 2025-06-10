@@ -130,7 +130,8 @@ def main(request: Request):
         today_string = today_object.strftime('%Y-%m-%d')
 
         dates_range = generate_date_list(next_date_to_process, today_string)
-    
+
+        print(f'Generating Files From {next_date_to_process} to {today_string}')
         for date in dates_range:
 
             NUM_CUSTOMERS = random.randint(50,200)
